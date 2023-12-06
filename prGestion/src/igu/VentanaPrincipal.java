@@ -137,7 +137,7 @@ public class VentanaPrincipal extends JFrame {
 
             JLabel lblMuestras = new JLabel("MUESTRAS");
             lblMuestras.setFont(new Font("Dialog", Font.PLAIN, 80));
-            lblMuestras.setBounds(231, 24, 423, 95);
+            lblMuestras.setBounds(491, 20, 423, 95);
             panelMuestras.add(lblMuestras);
 
             String[] columnNames = {"Nombre", "Edad", "Correo Electrónico"};
@@ -148,7 +148,7 @@ public class VentanaPrincipal extends JFrame {
             };
             table = new JTable(data, columnNames);
             JScrollPane scrollPane = new JScrollPane(table);
-            scrollPane.setBounds(43, 142, 1144, 158); // Ajusta las coordenadas y el tamaño del JScrollPane
+            scrollPane.setBounds(68, 144, 1268, 158); // Ajusta las coordenadas y el tamaño del JScrollPane
             panelMuestras.add(scrollPane);
             panelMuestras.add(getLblID());
             panelMuestras.add(getTextField());
@@ -183,7 +183,7 @@ public class VentanaPrincipal extends JFrame {
     public JList getList() {
     	if(list == null) {
     		list = new JList();
-            list.setBounds(132, 602, 1055, 95);
+            list.setBounds(281, 602, 1055, 95);
     	}
     	return list;
     }
@@ -220,7 +220,7 @@ public class VentanaPrincipal extends JFrame {
 		if (btnActualizar == null) {
 			btnActualizar = new JButton("Actualizar");
             btnActualizar.setBackground(SystemColor.scrollbar);
-            btnActualizar.setBounds(639, 716, 117, 29);
+            btnActualizar.setBounds(656, 716, 117, 29);
             btnActualizar.addActionListener(new ActionListener() {
 	        	 public void actionPerformed(ActionEvent e) {
 					
@@ -234,7 +234,7 @@ public class VentanaPrincipal extends JFrame {
 		if (btnLimpiar == null) {
 			 btnLimpiar = new JButton("Limpiar");
 	         btnLimpiar.setBackground(SystemColor.windowBorder);
-	         btnLimpiar.setBounds(863, 716, 117, 29);
+	         btnLimpiar.setBounds(923, 716, 117, 29);
 	         btnLimpiar.addActionListener(new ActionListener() {
 	        	 public void actionPerformed(ActionEvent e) {
 					
@@ -248,7 +248,7 @@ public class VentanaPrincipal extends JFrame {
 		if (btnSalir == null) {
 			btnSalir = new JButton("Salir");
             btnSalir.setBackground(SystemColor.scrollbar);
-            btnSalir.setBounds(1083, 716, 117, 29);
+            btnSalir.setBounds(1187, 716, 117, 29);
             btnSalir.addActionListener(new ActionListener() {
 	        	 public void actionPerformed(ActionEvent e) {
 	        		 System.exit(0);
@@ -266,14 +266,14 @@ public class VentanaPrincipal extends JFrame {
 		if (lblID == null) {
 			lblID = new JLabel("ID");
 			lblID.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-			lblID.setBounds(43, 359, 61, 16);
+			lblID.setBounds(68, 359, 61, 16);
 		}
 		return lblID;
 	}
 	private JTextField getTextField() {
 		if (textField == null) {
 			textField = new JTextField();
-			textField.setBounds(132, 354, 1055, 32);
+			textField.setBounds(281, 354, 1055, 32);
 			textField.setColumns(10);
 		}
 		return textField;
@@ -282,7 +282,7 @@ public class VentanaPrincipal extends JFrame {
 		if (lblNif == null) {
 			lblNif = new JLabel("NIF");
 			lblNif.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-			lblNif.setBounds(43, 436, 61, 16);
+			lblNif.setBounds(68, 436, 61, 16);
 		}
 		return lblNif;
 	}
@@ -290,7 +290,7 @@ public class VentanaPrincipal extends JFrame {
 		if (textField_1 == null) {
 			textField_1 = new JTextField();
 			textField_1.setColumns(10);
-			textField_1.setBounds(132, 431, 1055, 32);
+			textField_1.setBounds(281, 431, 1055, 32);
 		}
 		return textField_1;
 	}
@@ -298,7 +298,7 @@ public class VentanaPrincipal extends JFrame {
 		if (textField_2 == null) {
 			textField_2 = new JTextField();
 			textField_2.setColumns(10);
-			textField_2.setBounds(132, 513, 1055, 32);
+			textField_2.setBounds(281, 513, 1055, 32);
 		}
 		return textField_2;
 	}
@@ -306,7 +306,7 @@ public class VentanaPrincipal extends JFrame {
 		if (lblCultivo == null) {
 			lblCultivo = new JLabel("Cultivo");
 			lblCultivo.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-			lblCultivo.setBounds(43, 514, 102, 24);
+			lblCultivo.setBounds(68, 514, 102, 24);
 		}
 		return lblCultivo;
 	}
@@ -314,7 +314,7 @@ public class VentanaPrincipal extends JFrame {
 		if (lblSolucin == null) {
 			lblSolucin = new JLabel("Solución");
 			lblSolucin.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-			lblSolucin.setBounds(43, 602, 102, 24);
+			lblSolucin.setBounds(68, 602, 102, 24);
 		}
 		return lblSolucin;
 	}
