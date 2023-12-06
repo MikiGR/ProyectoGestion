@@ -34,6 +34,7 @@ public class VentanaPrincipal extends JFrame {
 	private JButton btnActualizar;
 	private JButton btnLimpiar;
 	private JButton btnSalir;
+	private JList list;
 
 
     public VentanaPrincipal() {
@@ -157,9 +158,8 @@ public class VentanaPrincipal extends JFrame {
             panelMuestras.add(getLblCultivo());
             panelMuestras.add(getLblSolucin());
             
-            JList list = new JList();
-            list.setBounds(132, 602, 1055, 95);
-            panelMuestras.add(list);
+            
+            panelMuestras.add(getList());
             
             
             panelMuestras.add(getBotonInsertar());
@@ -177,6 +177,15 @@ public class VentanaPrincipal extends JFrame {
             panelMuestras.add(getBotonLimpiar());
         }
         return panelMuestras;
+    }
+    
+    
+    public JList getList() {
+    	if(list == null) {
+    		list = new JList();
+            list.setBounds(132, 602, 1055, 95);
+    	}
+    	return list;
     }
     
     public JButton getBotonInsertar() {
