@@ -1,14 +1,22 @@
 package com.example.demo;
-import java.util.*;
+import Entity.TmuestraEntity;
+
+import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import java.io.*;
-public class VentanaPrincipal {
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.swing.table.DefaultTableModel;
+
+public class VentanaPrincipal extends JFrame {
     public static final long serialVersionUID = 1L;
     public JPanel contentPane;
     public JPanel panelPrincipal;
@@ -21,10 +29,10 @@ public class VentanaPrincipal {
     private JLabel lblMuestras;
     private JTable table;
     private JLabel lblID;
-    private JTextField textField;
+    private JTextField textFieldID;
     private JLabel lblNif;
-    private JTextField textField_1;
-    private JTextField textField_2;
+    private JTextField textFieldNIF;
+    private JTextField textFieldCultivo;
     private JLabel lblCultivo;
     private JLabel lblSolucin;
     private JButton btnInsertar;
@@ -33,6 +41,7 @@ public class VentanaPrincipal {
     private JButton btnLimpiar;
     private JButton btnSalir;
     private JList list;
+    private TmuestraEntity muestraSeleccionada;
 
 
     public VentanaPrincipal() {
@@ -120,7 +129,7 @@ public class VentanaPrincipal {
             btnCancel.setBounds(689, 674, 144, 45);
             btnCancel.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
+                    System.exit(0);
                 }
             });
         }
@@ -138,21 +147,16 @@ public class VentanaPrincipal {
             lblMuestras.setBounds(491, 20, 423, 95);
             panelMuestras.add(lblMuestras);
 
-            String[] columnNames = {"Nombre", "Edad", "Correo Electrónico"};
-            Object[][] data = {
-                    {"Juan", 25, "juan@example.com"},
-                    {"María", 30, "maria@example.com"},
-                    {"Carlos", 22, "carlos@example.com"}
-            };
-            table = new JTable(data, columnNames);
-            JScrollPane scrollPane = new JScrollPane(table);
+
+
+            JScrollPane scrollPane = new JScrollPane(getTable());
             scrollPane.setBounds(68, 144, 1268, 158); // Ajusta las coordenadas y el tamaño del JScrollPane
             panelMuestras.add(scrollPane);
             panelMuestras.add(getLblID());
-            panelMuestras.add(getTextField());
+            panelMuestras.add(getTextFieldID());
             panelMuestras.add(getLblNif());
-            panelMuestras.add(getTextField_1());
-            panelMuestras.add(getTextField_2());
+            panelMuestras.add(getTextFieldNIF());
+            panelMuestras.add(getTextFieldCultivo());
             panelMuestras.add(getLblCultivo());
             panelMuestras.add(getLblSolucin());
 
@@ -177,7 +181,67 @@ public class VentanaPrincipal {
         return panelMuestras;
     }
 
+    public JTable getTable(){
+        if(table == null){
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistence.xml"); // Reemplaza con tu unidad de persistencia
+            EntityManager em = emf.createEntityManager();
+            // Consultar la base de datos para obtener los datos de Tmuestra
+            List<TmuestraEntity> tmuestras = em.createQuery("SELECT t FROM TmuestraEntity t", TmuestraEntity.class).getResultList();
 
+            // Crear un DefaultTableModel con los datos y encabezados de columna
+            DefaultTableModel model = new DefaultTableModel();
+            model.setColumnIdentifiers(new Object[]{"ID", "NIF_Paciente", "Cultivo", "Solucion"});
+
+            for (TmuestraEntity tmuestra : tmuestras) {
+                // Agregar cada fila a la tabla
+                model.addRow(new Object[]{tmuestra.getId(), tmuestra.getNifPaciente(), tmuestra.getCultivo(), tmuestra.getSolucion()});
+            }
+
+            // Crear la JTable con el modelo
+            JTable table = new JTable(model);
+
+            // Cerrar el EntityManager cuando hayas terminado
+            em.close();
+            emf.close();
+            ListSelectionModel selectionModel = table.getSelectionModel();
+
+            // Agregar un ListSelectionListener para manejar cambios de selección
+            selectionModel.addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    if (!e.getValueIsAdjusting()) {
+                        // Manejar el evento de cambio de selección aquí
+                        int selectedRow = table.getSelectedRow();
+                        int selectedColumn = table.getSelectedColumn();
+                        // Verificar si la selección es válida
+                        if (selectedRow != -1 && selectedColumn != -1) {
+                            // Obtener el valor de la celda seleccionada
+                            muestraSeleccionada = (TmuestraEntity)table.getValueAt(selectedRow, selectedColumn);
+                            mostrarSeleccionada();
+                        }
+
+
+                    }
+                }
+            });
+        }
+        return table;
+    }
+
+    public void mostrarSeleccionada(){
+        if(muestraSeleccionada != null) {
+            textFieldID.setText(String.valueOf(muestraSeleccionada.getId()));
+            textFieldNIF.setText(String.valueOf(muestraSeleccionada.getNifPaciente()));
+            textFieldCultivo.setText(String.valueOf(muestraSeleccionada.getCultivo()));
+            list.setSelectedValue(muestraSeleccionada.getSolucion(), true);
+        }else{
+            textFieldID.setText("");
+            textFieldNIF.setText("");
+            textFieldCultivo.setText("");
+            list.clearSelection();
+            table.clearSelection();
+        }
+    }
     public JList getList() {
         if(list == null) {
             list = new JList();
@@ -187,13 +251,26 @@ public class VentanaPrincipal {
     }
 
     public JButton getBotonInsertar() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistence.xml"); // Reemplaza con tu unidad de persistencia
+        EntityManager em = emf.createEntityManager();
         if (btnInsertar == null) {
             btnInsertar = new JButton("Insertar");
             btnInsertar.setBackground(SystemColor.scrollbar);
             btnInsertar.setBounds(179, 716, 117, 29);
             btnInsertar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
+                    em.getTransaction().begin();
+                    TmuestraEntity nueva = new TmuestraEntity();
+                    nueva.setId(Integer.parseInt(textFieldID.getText()));
+                    nueva.setNifPaciente(textFieldNIF.getText());
+                    nueva.setCultivo(textFieldCultivo.getText());
+                    nueva.setSolucion((int)list.getSelectedValue());
+                    em.persist(nueva);
+                    em.getTransaction().commit();
+                    em.close();
+                    emf.close();
+                    muestraSeleccionada = null;
+                    mostrarSeleccionada();
                 }
             });
         }
@@ -201,13 +278,21 @@ public class VentanaPrincipal {
     }
 
     public JButton getBotonBorrar() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistence.xml"); // Reemplaza con tu unidad de persistencia
+        EntityManager em = emf.createEntityManager();
         if (btnBorrar == null) {
             btnBorrar = new JButton("Borrar");
             btnBorrar.setBackground(SystemColor.scrollbar);
             btnBorrar.setBounds(399, 716, 117, 29);
             btnBorrar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
+                    em.getTransaction().begin();
+                    em.remove(muestraSeleccionada);
+                    em.getTransaction().commit();
+                    em.close();
+                    emf.close();
+                    muestraSeleccionada = null;
+                    mostrarSeleccionada();
                 }
             });
         }
@@ -215,13 +300,28 @@ public class VentanaPrincipal {
     }
 
     public JButton getBotonActualizar() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistence.xml"); // Reemplaza con tu unidad de persistencia
+        EntityManager em = emf.createEntityManager();
         if (btnActualizar == null) {
             btnActualizar = new JButton("Actualizar");
             btnActualizar.setBackground(SystemColor.scrollbar);
             btnActualizar.setBounds(656, 716, 117, 29);
             btnActualizar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
+                    em.getTransaction().begin();
+                    if (muestraSeleccionada.getId() != Integer.parseInt(textFieldID.getText()))
+                        muestraSeleccionada.setId(Integer.parseInt(textFieldID.getText()));
+                    if (!muestraSeleccionada.getNifPaciente().equalsIgnoreCase(textFieldNIF.getText()))
+                        muestraSeleccionada.setNifPaciente(textFieldNIF.getText());
+                    if (!muestraSeleccionada.getCultivo().equalsIgnoreCase(textFieldCultivo.getText()))
+                        muestraSeleccionada.setCultivo(textFieldCultivo.getText());
+                    if (muestraSeleccionada.getSolucion() != (int) list.getSelectedValue())
+                        muestraSeleccionada.setSolucion((int) list.getSelectedValue());
+                    em.getTransaction().commit();
+                    em.close();
+                    emf.close();
+                    muestraSeleccionada = null;
+                    mostrarSeleccionada();
                 }
             });
         }
@@ -235,7 +335,8 @@ public class VentanaPrincipal {
             btnLimpiar.setBounds(923, 716, 117, 29);
             btnLimpiar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
+                    muestraSeleccionada = null;
+                    mostrarSeleccionada();
                 }
             });
         }
@@ -265,16 +366,17 @@ public class VentanaPrincipal {
             lblID = new JLabel("ID");
             lblID.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
             lblID.setBounds(68, 359, 61, 16);
+
         }
         return lblID;
     }
-    private JTextField getTextField() {
-        if (textField == null) {
-            textField = new JTextField();
-            textField.setBounds(281, 354, 1055, 32);
-            textField.setColumns(10);
+    private JTextField getTextFieldID() {
+        if (textFieldID == null) {
+            textFieldID = new JTextField();
+            textFieldID.setBounds(281, 354, 1055, 32);
+            textFieldID.setColumns(10);
         }
-        return textField;
+        return textFieldID;
     }
     private JLabel getLblNif() {
         if (lblNif == null) {
@@ -284,21 +386,21 @@ public class VentanaPrincipal {
         }
         return lblNif;
     }
-    private JTextField getTextField_1() {
-        if (textField_1 == null) {
-            textField_1 = new JTextField();
-            textField_1.setColumns(10);
-            textField_1.setBounds(281, 431, 1055, 32);
+    private JTextField getTextFieldNIF() {
+        if (textFieldNIF == null) {
+            textFieldNIF = new JTextField();
+            textFieldNIF.setColumns(10);
+            textFieldNIF.setBounds(281, 431, 1055, 32);
         }
-        return textField_1;
+        return textFieldNIF;
     }
-    private JTextField getTextField_2() {
-        if (textField_2 == null) {
-            textField_2 = new JTextField();
-            textField_2.setColumns(10);
-            textField_2.setBounds(281, 513, 1055, 32);
+    private JTextField getTextFieldCultivo() {
+        if (textFieldCultivo == null) {
+            textFieldCultivo = new JTextField();
+            textFieldCultivo.setColumns(10);
+            textFieldCultivo.setBounds(281, 513, 1055, 32);
         }
-        return textField_2;
+        return textFieldCultivo;
     }
     private JLabel getLblCultivo() {
         if (lblCultivo == null) {
