@@ -38,25 +38,44 @@ public class MuestraService {
     }
 
 
-    public Muestra create(String nifPaciente, String cultivo, Solucion solucion){
+    public Muestra create(int id,String nifPaciente, String cultivo, Solucion solucion){
 
         Muestra muestra = new Muestra();
+        muestra.setId(id);
         muestra.setNifPaciente(nifPaciente);
         muestra.setCultivo(cultivo);
         muestra.setSolucion(solucion);
 
         return repository.save(muestra);
     }
+public int id_unico(int id){
+        for(Muestra m : getMuestras()){
+            if(m.getId()!=id){
+                return 0;
+            }
+        }
+        return 1;
+}
 
     public List<Muestra> getAll() {
         return repository.findAll();
     }
 
-    public Muestra update(Integer id, String cultivo, Solucion solucion){
+    public Muestra update(Integer id,String nifPaciente, String cultivo, Solucion solucion){
 
         Muestra muestra = getMuestraById(id);
-        muestra.setCultivo(cultivo);
-        muestra.setSolucion(solucion);
+        if(id != Integer.parseInt(muestra.getId().toString())){
+            muestra.setId(id);
+        }
+        if(!nifPaciente.equals(muestra.getNifPaciente())){
+            muestra.setNifPaciente(nifPaciente);
+        }
+        if(!cultivo.equals(muestra.getCultivo())) {
+            muestra.setCultivo(cultivo);
+        }
+        if(!solucion.equals(muestra.getSolucion())) {
+            muestra.setSolucion(solucion);
+        }
         return repository.save(muestra);
 
     }

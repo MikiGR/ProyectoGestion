@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.html.parser.Entity;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -233,7 +234,9 @@ public class VentanaPrincipal extends JFrame {
             btnInsertar.setBounds(179, 716, 117, 29);
             btnInsertar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					//TODO
+					muestraService.create(Integer.parseInt(textFieldID.getText()),textFieldNIF.getText(),textFieldCultivo.getText(),(Solucion)list.getSelectedValue());
+					muestraSeleccionada = null;
+					mostrarSeleccionada();
 				}
 			});
 		}
@@ -247,7 +250,13 @@ public class VentanaPrincipal extends JFrame {
 	         btnBorrar.setBounds(399, 716, 117, 29);
 	         btnBorrar.addActionListener(new ActionListener() {
 	        	 public void actionPerformed(ActionEvent e) {
-					//TODO
+					 try{
+						muestraService.delete(muestraSeleccionada);
+						muestraSeleccionada = null;
+						mostrarSeleccionada();
+					 }catch(Exception exc){
+						 System.err.println("ERROR: "+exc);
+					 }
 				}
 			});
 		}
@@ -261,7 +270,13 @@ public class VentanaPrincipal extends JFrame {
             btnActualizar.setBounds(639, 716, 117, 29);
             btnActualizar.addActionListener(new ActionListener() {
 	        	 public void actionPerformed(ActionEvent e) {
-					//TODO
+					if(muestraService.id_unico(Integer.parseInt(textFieldID.getText())) == 0){
+
+					}else{
+						muestraService.update(Integer.parseInt(textFieldID.getText()),textFieldNIF.getText(),textFieldCultivo.getText(),(Solucion)list.getSelectedValue());
+						muestraSeleccionada = null;
+						mostrarSeleccionada();
+					}
 				}
 			});
 		}
