@@ -1,0 +1,17 @@
+---
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydb
+    username: postgres
+    password: acabapp
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    platform: postgres
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  main:
+    headless: true
